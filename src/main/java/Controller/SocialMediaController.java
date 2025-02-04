@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Model.Account;
+import Model.Message;
 import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -15,8 +17,10 @@ import io.javalin.http.Context;
  */
 public class SocialMediaController {
     AccountService accountService;
+    MessageService messageService;
     public SocialMediaController() {
         accountService = new AccountService();
+        messageService = new MessageService();
     }
 
     /**
@@ -28,6 +32,17 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.post("/register", this::postAccountHandler);
         app.post("/login", this::verifyLogin);
+
+        app.get("/messages", this::getAllMessages);
+        /*
+         * app.post("/messages", this::)
+         * 
+         * app.get("/messages/{message_id}", this::)
+         * app.delete("/messages/{message_id}", this::)
+         * app.patch("/messages/{message_id}", this::)
+         * app.get("/accounts/{account_id}/messages", this::)
+         */
+
 
         return app;
     }
@@ -45,11 +60,11 @@ public class SocialMediaController {
         Account account = mapper.readValue(ctx.body(), Account.class);
         Account addedAccount = accountService.addAccount(account);
 
-        // if username not empty, password at least 4 long, and username not found in database already, return account as json, otherwise 400 error
-        if (account.getUsername().length() > 0 && account.getPassword().length() > 4 && accountService.getAccountByUsername(account) == null) {
-            ctx.json(addedAccount);
-        } else {
+        // if username is empty, password less than 4 long, and username found in database already, return error
+        if (account.getUsername().length() == 0 || account.getPassword().length() < 4 || accountService.getAccountByUsername(account) != null) {
             ctx.status(400);
+        } else {
+            ctx.json(addedAccount);
         }
     }
 
@@ -63,6 +78,10 @@ public class SocialMediaController {
         } else {
             ctx.json(accountToVerify);
         }
+    }
+
+    private void getAllMessages(Context ctx) throws JsonProcessingException {
+        ctx.json(messageService.getAllMessages());
     }
 
 

@@ -32,22 +32,13 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.post("/register", this::postAccountHandler);
         app.post("/login", this::verifyLogin);
-
+        app.post("/messages", this::createMessage);
         app.get("/messages", this::getAllMessages);
         app.get("/messages/{message_id}", this::getMessageById);
         app.delete("/messages/{message_id}", this::deleteMessageById);
         app.patch("/messages/{message_id}", this::updateMessageById);
         app.get("/accounts/{account_id}/messages", this::getMessagesByAccountId);
-        /*
-         * app.post("/messages", this::);
-         * 
-         * 
-         * 
-         * 
-         * 
-         */
-
-
+        
         return app;
     }
 
@@ -81,6 +72,18 @@ public class SocialMediaController {
             ctx.status(401);
         } else {
             ctx.json(accountToVerify);
+        }
+    }
+
+    private void createMessage(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message addedMessage = messageService.addMessage(message);
+
+        if (addedMessage == null) {
+            ctx.status(400);
+        } else {
+            ctx.json(addedMessage);
         }
     }
 

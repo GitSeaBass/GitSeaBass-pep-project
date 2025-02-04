@@ -53,7 +53,28 @@ public class AccountDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return null;
+    }
 
+    public Account verifyAccount(Account account) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        try {
+            String sql = "SELECT * FROM account WHERE username = ? AND password = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, account.getUsername());
+            ps.setString(2, account.getPassword());
+
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Account verifiedAccount = new Account(rs.getInt("account_id"), rs.getString("username"), rs.getString("password"));
+                return verifiedAccount;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 

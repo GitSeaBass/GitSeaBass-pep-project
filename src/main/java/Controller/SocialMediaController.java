@@ -27,6 +27,7 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.post("/register", this::postAccountHandler);
+        app.post("/login", this::verifyLogin);
 
         return app;
     }
@@ -46,9 +47,21 @@ public class SocialMediaController {
 
         // if username not empty, password at least 4 long, and username not found in database already, return account as json, otherwise 400 error
         if (account.getUsername().length() > 0 && account.getPassword().length() > 4 && accountService.getAccountByUsername(account) == null) {
-            ctx.json(mapper.writeValueAsString(addedAccount));
+            ctx.json(addedAccount);
         } else {
             ctx.status(400);
+        }
+    }
+
+    private void verifyLogin(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(ctx.body(), Account.class);
+        Account accountToVerify = accountService.verifyLoginAttempt(account);
+
+        if (accountToVerify == null) {
+            ctx.status(401);
+        } else {
+            ctx.json(accountToVerify);
         }
     }
 

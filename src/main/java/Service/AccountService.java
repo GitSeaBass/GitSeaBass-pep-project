@@ -22,4 +22,8 @@ public class AccountService {
     public Account getAccountByUsername(Account account) {
         return accountDAO.getAccountByUsername(account);
     }
+
+    public Account verifyLoginAttempt(Account account) {
+        return accountDAO.verifyAccount(account);
+    }
 }

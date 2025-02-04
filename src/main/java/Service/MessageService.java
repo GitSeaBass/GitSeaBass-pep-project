@@ -33,7 +33,7 @@ public class MessageService {
     }
 
     public Message updateMessageById(int message_id, Message message) {
-        if (messageDAO.getMessageById(message_id) == null) {
+        if (messageDAO.getMessageById(message_id) == null || message.getMessage_text().length() == 0 || message.getMessage_text().length() > 255) {
             return null;
         }
         messageDAO.updateMessageById(message_id, message);

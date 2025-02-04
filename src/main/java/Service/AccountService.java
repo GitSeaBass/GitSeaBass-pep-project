@@ -15,12 +15,11 @@ public class AccountService {
     }
 
     public Account addAccount(Account account) {
-        return accountDAO.insertAccount(null);
-    }
+        if (account.getUsername().length() > 0 && account.getPassword().length() >= 4) {
+            return accountDAO.insertAccount(account);
+        }
 
-    // returns the account with given username
-    public Account getAccountByUsername(Account account) {
-        return accountDAO.getAccountByUsername(account);
+        return null;
     }
 
     public Account verifyLoginAttempt(Account account) {

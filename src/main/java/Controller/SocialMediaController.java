@@ -56,7 +56,7 @@ public class SocialMediaController {
         Account addedAccount = accountService.addAccount(account);
 
         // if username is empty, password less than 4 long, and username found in database already, return error
-        if (account.getUsername().length() == 0 || account.getPassword().length() < 4 || accountService.getAccountByUsername(account) != null) {
+        if (addedAccount == null) {
             ctx.status(400);
         } else {
             ctx.json(addedAccount);
@@ -116,7 +116,7 @@ public class SocialMediaController {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
         Message updatedMessage = messageService.updateMessageById(message_id, message);
 
-        if (updatedMessage == null || message.getMessage_text().length() == 0 || message.getMessage_text().length() > 255) {
+        if (updatedMessage == null) {
             ctx.status(400);
         } else {
             ctx.json(updatedMessage);

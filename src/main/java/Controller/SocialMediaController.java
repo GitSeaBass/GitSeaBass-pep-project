@@ -34,10 +34,11 @@ public class SocialMediaController {
         app.post("/login", this::verifyLogin);
 
         app.get("/messages", this::getAllMessages);
+        app.get("/messages/{message_id}", this::getMessageById);
         /*
          * app.post("/messages", this::)
          * 
-         * app.get("/messages/{message_id}", this::)
+         * 
          * app.delete("/messages/{message_id}", this::)
          * app.patch("/messages/{message_id}", this::)
          * app.get("/accounts/{account_id}/messages", this::)
@@ -80,8 +81,16 @@ public class SocialMediaController {
         }
     }
 
-    private void getAllMessages(Context ctx) throws JsonProcessingException {
+    private void getAllMessages(Context ctx) {
         ctx.json(messageService.getAllMessages());
+    }
+
+    private void getMessageById(Context ctx) {
+        if (messageService.getMessageById(ctx.pathParam("message_id")) == null) {
+            ctx.result();
+        } else {
+            ctx.json(messageService.getMessageById(ctx.pathParam("message_id")));
+        }
     }
 
 

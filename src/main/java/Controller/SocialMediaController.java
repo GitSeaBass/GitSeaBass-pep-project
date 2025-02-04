@@ -37,13 +37,14 @@ public class SocialMediaController {
         app.get("/messages/{message_id}", this::getMessageById);
         app.delete("/messages/{message_id}", this::deleteMessageById);
         app.patch("/messages/{message_id}", this::updateMessageById);
+        app.get("/accounts/{account_id}/messages", this::getMessagesByAccountId);
         /*
          * app.post("/messages", this::);
          * 
          * 
          * 
          * 
-         * app.get("/accounts/{account_id}/messages", this::);
+         * 
          */
 
 
@@ -119,5 +120,9 @@ public class SocialMediaController {
         }
     }
 
+    private void getMessagesByAccountId(Context ctx) {
+        int account_id = Integer.parseInt(ctx.pathParam("account_id"));
+        ctx.json(messageService.getMessagesByAccountId(account_id));
+    }
 
 }

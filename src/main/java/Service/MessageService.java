@@ -23,4 +23,12 @@ public class MessageService {
         int message_idToInt = Integer.parseInt(message_id);
         return messageDAO.getMessageById(message_idToInt);
     }
+
+    public Message deleteMessageById(int message_id) {
+        if (messageDAO.getMessageById(message_id) == null) {
+            return null;
+        }
+
+        return messageDAO.deleteMessageById(message_id);
+    }
 }
